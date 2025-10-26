@@ -1,0 +1,155 @@
+# GPT Training and PDF Document Processing System
+
+A minimal **GPT-style transformer** training system inspired by nanoGPT, optimized for CPU or GPU usage.  
+Includes an optional **PDF-to-text** converter for preparing legal and regulatory documents.
+
+---
+
+## 📦 Project Structure
+```
+project/
+├── train_gpt_fixed.py         # Main GPT training script
+├── pdf_converter.py           # PDF to text utility
+├── input.txt                  # Training corpus (text file)
+├── cleaned_output.txt         # Cleaned text
+├── zoning_bylaw.pdf           # Example PDF
+└── README.md                  # This file
+```
+
+---
+
+## 🧩 Features
+
+- GPT-2–style transformer implemented from scratch in PyTorch
+- Works on CPU, CUDA, or Apple MPS
+- Supports gradient accumulation for large effective batch sizes
+- Cosine learning rate decay with warmup
+- Gradient clipping and mixed precision (bfloat16)
+- Weight tying between embeddings and output head
+- Optional Hugging Face GPT-2 pretrained weight loading
+
+---
+
+## ⚙️ Requirements
+
+- **Python 3.8+**
+- **PyTorch 2.1+**
+- **tiktoken**, **transformers**, **pymupdf** (for PDF conversion)
+- 8GB+ RAM recommended
+
+Install dependencies:
+```bash
+pip install torch torchvision torchaudio tiktoken transformers pymupdf
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Prepare your text file
+Place your training data as `input.txt`:
+```bash
+cp TOA_ZBL-Consolidation_November-1-2023.txt input.txt
+```
+
+### 2. Train on CPU or single GPU
+```bash
+python train_gpt_fixed.py
+```
+
+### 3. (Optional) Multi-GPU training
+```bash
+torchrun --standalone --nproc_per_node=4 train_gpt_fixed.py
+```
+
+---
+
+## 🧠 Model Configuration
+
+Default CPU-friendly model:
+```python
+GPTConfig(
+    vocab_size=50304,
+    n_layer=6,
+    n_head=6,
+    n_embd=384,
+    block_size=1024
+)
+```
+
+---
+
+## 🧮 Key Hyperparameters
+
+| Parameter | Default | Description |
+|------------|----------|-------------|
+| `B` | 4 | Micro-batch size |
+| `T` | 256 | Sequence length |
+| `total_batch_size` | 8192 | Effective global batch size |
+| `grad_accum_steps` | auto | Computed as `total_batch_size // (B * world_size)` |
+| `max_lr` | 6e-4 | Peak learning rate |
+| `min_lr` | 6e-5 | Minimum learning rate |
+| `max_steps` | 50 | Total steps |
+| `weight_decay` | 0.1 | Regularization |
+| `grad_clip` | 1.0 | Max gradient norm |
+
+---
+
+## 📜 Example Output
+
+```
+loaded 125000 tokens
+1 epoch = 122 batches
+using device: cuda
+total desired batch size: 8192
+=> calculated gradient accumulation steps: 512
+step    0 | loss: 10.823 | lr 6.0e-05 | norm: 15.23 | dt: 234.5ms | tok/sec: 8192.0
+...
+Training complete!
+```
+
+---
+
+## 🧾 PDF → Text Conversion (optional)
+
+To process PDFs:
+```bash
+python pdf_converter.py
+```
+
+Creates:
+- `zoning_bylaw.txt` — raw text  
+- `cleaned_output.txt` — cleaned text ready for training
+
+---
+
+## ⚠️ Troubleshooting
+
+| Problem | Fix |
+|----------|-----|
+| CUDA out of memory | Reduce `B` or `T` |
+| Training slow on CPU | Use GPU or reduce `total_batch_size` |
+| Unicode errors | Open files with `encoding='utf-8'` |
+| Import errors | `pip install torch tiktoken transformers pymupdf` |
+
+---
+
+## 📚 References
+
+- [PyTorch Documentation](https://pytorch.org/docs/)
+- [Hugging Face Transformers](https://huggingface.co/docs/transformers)
+- [Tiktoken GitHub](https://github.com/openai/tiktoken)
+- [Attention Is All You Need (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762)
+
+---
+
+## 🪪 License
+
+Educational and research use only.  
+For production use, consider **Hugging Face Transformers** or **PyTorch Lightning**.
+
+---
+
+## 🤝 Contributing
+
+Pull requests and suggestions are welcome!
