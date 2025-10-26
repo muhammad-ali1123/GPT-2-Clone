@@ -1,6 +1,9 @@
-URL: https://www.ajax.ca/en/home-and-property/resources/Planning/TOA_ZBL-Consolidation_November-1-2023.pdf
-Step 1: install it with: pip install pymupdf
-Step 2: All Below
+# Goal: Convert PDF file into a .txt file
+# URL: https://www.ajax.ca/en/home-and-property/resources/Planning/TOA_ZBL-Consolidation_November-1-2023.pdf
+
+ # Step 1: pip install pymupdf via terminal
+
+# Step 2: All Below
  
 import fitz  # PyMuPDF
 import re
