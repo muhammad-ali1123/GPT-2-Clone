@@ -16,9 +16,8 @@ A clean, educational implementation of GPT-2 optimized for training on consumer 
 ```
 .
 ├── model.py           # ~300 lines - Complete GPT model definition
-├── train.py           # ~200 lines - Training loop (simplified)
 ├── input              # Your training data (text file)
-└── log/              # Training logs and checkpoints
+
 ```
 
 ## Quick Start
